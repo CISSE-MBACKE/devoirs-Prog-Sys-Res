@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
 						argument_g = atoi(optarg);
 					  i = 2;
 					  break;
-				case ':':if(f_exist && optopt != 'f')//pour ne pas qu'il donne deux fois l'option f
+				case ':':if(f_exist && optopt != 'f')//pour ne pas qu'il donne deux fois l'option f ou autre chose inconnue
 						g_exist = 1;
-					    if(g_exist && optopt != 'g')//pour ne pas qu'il donne deux fois l'option g
+					    if(g_exist && optopt != 'g')//pour ne pas qu'il donne deux fois l'option g ou autre chose inconnue
 					 	f_exist = 1;
 					 break;
 				case '?':printf("ERREUR: option -%c inconnue\n",optopt);exit(-1);
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
 					printf(" f(n) = 2 ^ n et g(n) = 2 * n ==> gof(%d) = %d\n",argument_g, g(f(argument_g)));
 			}
 			else
-				printf("Erreur : option fournie deux fois de suite\n");
+				printf("Erreur : option ou argument inconnu(e)!!\n");
 		}
 	}
 	else

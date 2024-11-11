@@ -113,13 +113,13 @@ int main(int argc, char *argv[])
             {
 		lseek(fd, 0, SEEK_SET);//pour remettre le curseur au debut du fichier.
                 printf("\nAffichage du contenu du fichier %s...\n\n",nomfichier);
-                if(b_exist)
-                {
-                    chargement_matrice_binaire(fd, mat, dim);//le chargement est suivi d'une affichage des éléments
-                }
-                else//par défaut traitement au format texte.
+                if(t_exist)
                 {
                     chargement_matrice_texte(fd, mat, dim);//le chargement est suivi d'une affichage des éléments
+                }
+                else//par défaut traitement au format binaire.
+                {
+			chargement_matrice_binaire(fd, mat, dim);//le chargement est suivi d'une affichage des éléments
                 }
             }
 	    close(fd);

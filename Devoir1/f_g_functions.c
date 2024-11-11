@@ -6,12 +6,12 @@
 extern char* optarg;
 extern int optopt;
 
-int f(int n)
+double f(int n)
 {
 	return pow(2, n);
 }
 
-int g(int n)
+double g(int n)
 {
 	return 2 * n;
 }
@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
 						argument_g = atoi(optarg);
 					  i = 2;
 					  break;
-				case ':':if(f_exist && optopt != 'f')//pour ne pas qu'il donne deux fois l'option f ou autre chose inconnue
+				case ':':if(f_exist && optopt != 'f')//pour ne pas qu'il donne autre argument que -g sinon erreur
 						g_exist = 1;
-					    if(g_exist && optopt != 'g')//pour ne pas qu'il donne deux fois l'option g ou autre chose inconnue
+					    if(g_exist && optopt != 'g')//pour ne pas qu'il donne autre argument que -f sinon erreur
 					 	f_exist = 1;
 					 break;
 				case '?':printf("ERREUR: option -%c inconnue\n",optopt);exit(-1);
@@ -49,21 +49,21 @@ int main(int argc, char *argv[])
 		if(argc == 3)
 		{
 			if(f_exist)// f(n)
-				printf(" f(n) = 2 ^ n ==> f(%d) = %d\n",argument_f, f(argument_f));
+				printf(" f(n) = 2 ^ n ==> f(%d) = %.4lf\n",argument_f, f(argument_f));
 			else// g(n)
-				printf(" g(n) = 2 * n  ==> g(%d) = %d\n",argument_g, g(argument_g));
+				printf(" g(n) = 2 * n  ==> g(%d) = %.4lf\n",argument_g, g(argument_g));
 		}
 		else
 		{
 			if(f_exist && g_exist)
 			{
 				if(i == 1)// cas ou l'utilisateur veut calculer fog
-					printf(" f(n) = 2 ^ n et g(n) = 2 * n ==> fog(%d) = %d\n",argument_f, f(g(argument_f)));
+					printf(" f(n) = 2 ^ n et g(n) = 2 * n ==> fog(%d) = %.4lf\n",argument_f, f(g(argument_f)));
 				else// cas ou l'utilisateur veut calculer gof
-					printf(" f(n) = 2 ^ n et g(n) = 2 * n ==> gof(%d) = %d\n",argument_g, g(f(argument_g)));
+					printf(" f(n) = 2 ^ n et g(n) = 2 * n ==> gof(%d) = %.4lf\n",argument_g, g(f(argument_g)));
 			}
-			else
-				printf("Erreur : option ou argument inconnu(e)!!\n");
+			else//
+				printf("Erreur : option fournie deux fois de suite ou argument inconnue\n");
 		}
 	}
 	else

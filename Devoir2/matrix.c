@@ -9,23 +9,23 @@
 #include <ctype.h>
 #include <string.h>
 
-int** creation_matrice(unsigned int d);
 
-void saisie_aleatoire_matrice(int**, unsigned int);
+/********************************Déclaration des fonction*******************************/
+int** creation_matrice(unsigned int d);
 
 void libere_matrice(int**, unsigned int);
 
 void affichage_matrice(int**, unsigned int);
 
-void chargement_matrice_binaire(int fd, int **mat, unsigned int d);
-void chargement_matrice_texte(int fd, int **mat, unsigned int);
+void affichage_matrice_binaire(int fd, unsigned int d);
+void affichage_matrice_texte(int fd, unsigned int);
 
 void sauvegarde_matrice_binaire(int **mat, int fd, unsigned int d);
 void sauvegarde_matrice_texte(int **mat, int fd, unsigned int d);
 
 
 
-
+/********************************Fonction principale : le main********************************/
 
 int main(int argc, char *argv[])
 {
@@ -65,15 +65,8 @@ int main(int argc, char *argv[])
 			case '?': printf("ERREUR: option %c inconnues!!!\n",optopt);break;
 		}
 	}
-	int **mat = creation_matrice(dim);
-	if(c_exist)
-	{
-		printf("\nCreation de la matrice aleatoire matrix...\n");
-		saisie_aleatoire_matrice(mat, dim);
-		printf("\nAffichage de la matrice matrix...\n\n");
-		affichage_matrice(mat, dim);
-	}
-	if(nomfichier)
+
+	if(nomfichier)//si le fichier n'est pas spécifié, aucune opération n'est faite
 	{
 		if(t_exist && b_exist)
 		{
@@ -81,8 +74,8 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-            	int i,j;
-            	int fd;
+        int i,j;
+        int fd;
 		if(!c_exist)
 		{
 			fd = open(nomfichier, O_RDONLY);
@@ -91,50 +84,54 @@ int main(int argc, char *argv[])
 				perror("Erreur lors de l'ouverture du fichier:");
 				exit(errno);
 			}
-            	}
-            	else
-            	{
-                	fd = open(nomfichier, O_RDWR|O_TRUNC|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-		if(fd == -1)
-                {
-                    perror("Erreur d'ouverture du fichier");
-                    exit(errno);
-                }
-                if(b_exist)
-                {
-                    sauvegarde_matrice_binaire(mat, fd, dim);
-                }
-                else
-                {
-                    sauvegarde_matrice_texte(mat, fd, dim);
-                }
-            }
-            if(a_exist)
-            {
-		lseek(fd, 0, SEEK_SET);//pour remettre le curseur au debut du fichier.
-                printf("\nAffichage du contenu du fichier %s...\n\n",nomfichier);
-                if(t_exist)
-                {
-                    chargement_matrice_texte(fd, mat, dim);//le chargement est suivi d'une affichage des éléments
-                }
-                else//par défaut traitement au format binaire.
-                {
-			chargement_matrice_binaire(fd, mat, dim);//le chargement est suivi d'une affichage des éléments
-                }
-            }
-	    close(fd);
+        }
+        else
+        {
+			printf("\nCreation de la matrice aleatoire matrix...\n");
+			int **mat = creation_matrice(dim);
+			printf("\nAffichage de la matrice matrix...\n\n");
+			affichage_matrice(mat, dim);
+
+            fd = open(nomfichier, O_RDWR|O_TRUNC|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+			if(fd == -1)
+			{
+				perror("Erreur d'ouverture du fichier");
+				exit(errno);
+			}
+			if(b_exist)
+			{
+				sauvegarde_matrice_binaire(mat, fd, dim);
+			}
+			else
+			{
+				sauvegarde_matrice_texte(mat, fd, dim);
+			}
+        }
+		if(a_exist)
+		{
+			lseek(fd, 0, SEEK_SET);//pour remettre le curseur au debut du fichier.
+			printf("\nAffichage du contenu du fichier %s...\n\n",nomfichier);
+			if(t_exist)
+			{
+				affichage_matrice_texte(fd, dim);//le chargement est suivi d'une affichage des éléments
+			}
+			else//par défaut traitement au format binaire.
+			{
+				affichage_matrice_binaire(fd, dim);//le chargement est suivi d'une affichage des éléments
+			}
+		}
+		close(fd);
         }
     }
-	libere_matrice(mat, dim);
+	else
+		printf("ERREUR: aucun fichier spécifier!!\n");
 
 	return 0;
 }
 
 
 
-
-
-
+/*****************************définition des fonctions************************************/
 
 void affichage_matrice(int** mat, unsigned int d)
 {
@@ -161,6 +158,14 @@ int** creation_matrice(unsigned int d)
 	{
 		mat[i] = (int*)malloc(d * sizeof(int));
 	}
+	srand(time(NULL));
+	for(i = 0; i < d; i++)
+	{
+		for(j = 0; j < d; j++)
+		{
+			mat[i][j] = rand();
+		}
+	}
 	return mat;
 }
 
@@ -177,23 +182,7 @@ void libere_matrice(int** mat, unsigned int d)
 	}
 }
 
-void saisie_aleatoire_matrice(int** mat, unsigned int d)
-{
-	if(mat)
-	{
-		int i,j;
-		srand(time(NULL));
-		for(i = 0; i < d; i++)
-		{
-			for(j = 0; j < d; j++)
-			{
-				mat[i][j] = rand();
-			}
-		}
-	}
-}
-
-void chargement_matrice_binaire(int fd, int **mat, unsigned int d)
+void affichage_matrice_binaire(int fd, unsigned int d)
 {
     int nombre, i, j;
     for(i = 0; i < d; i++)
@@ -206,7 +195,7 @@ void chargement_matrice_binaire(int fd, int **mat, unsigned int d)
         printf("\n");
     }
 }
-void chargement_matrice_texte(int fd, int **mat, unsigned int d)
+void affichage_matrice_texte(int fd, unsigned int d)
 {
     int i,j;
     char character;
@@ -216,17 +205,16 @@ void chargement_matrice_texte(int fd, int **mat, unsigned int d)
         for(j = 0; j < d; j++)
         {
 
-            while(read(fd, &character, sizeof(char)) > 0 )
+            while(read(fd, &character, sizeof(char)) > 0 )//recuperation caractère par caractére
             {		
-                if(isdigit(character))
+                if(isdigit(character))//si c'est un chiffre, on prend
                 {
                     sprintf(buff + strlen(buff), "%c",character);
                 }
-                else
+                else// espace ou \n => fin du nombre, on l'affiche donc
                 {
-                    int nombre = atoi(buff);
-                    printf("%-10d   ",nombre);
-                    memset(buff, 0, 20);
+                    printf("%-10s   ",buff);
+                    memset(buff, 0, 20);//vide la chaine pour stocker le nombre suivant
                     char *buff = malloc(20 * sizeof(char));
                     break;
                 }
@@ -253,6 +241,7 @@ void sauvegarde_matrice_binaire(int **mat, int fd, unsigned int d)
         }
     }
 }
+	
 void sauvegarde_matrice_texte(int **mat, int fd, unsigned int d)
 {
     int i,j;
@@ -261,7 +250,7 @@ void sauvegarde_matrice_texte(int **mat, int fd, unsigned int d)
         for(j = 0; j < d; j++)
         {
             char buff[20]; int n;
-            if(j != 9)
+            if(j != d-1)
                 n = sprintf(buff, "%d ",mat[i][j]);
             else
                 n = sprintf(buff, "%d\n",mat[i][j]);

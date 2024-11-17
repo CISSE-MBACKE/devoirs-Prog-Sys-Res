@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	if(argc < 3)
 	{
 		printf("ERREUR: nombre d'argument insuffisant!!\n");
-		printf("Usage: ./%s [ taille_en_octet | part_1 part_2 part_3 ... part_n ]\n",argv[0]);
+		printf("Usage: %s [ taille_en_octet | part_1 part_2 part_3 ... part_n ]\n",argv[0]);
 		exit(errno);
 	}
 	char *fin;
@@ -45,15 +45,18 @@ int main(int argc, char *argv[])
 		int index = 1, N;
 		int n, fdFils;
 		int nbRead = 0;
+		int nbChiffre = 0, v = 0;
 		printf("découpage du fichier %s en fichiers de taille %d maximum...\n\n",argv[1], taille);
 		while( (nbRead = read(fd, buff, taille)) > 0)
 		{
 			//Création du nom du nouveau fichier => "nomFichierOrigine + _index + .txt"
 			//(exemple d'un premier partition d'un fichier file1.txt : son nom sera file1_1.txt)
-			N = strlen(argv[1]) + getNbChiffre(index) -3; //On gère d'abord sa taille avec exactitude
+		    nbChiffre =	getNbChiffre(index);
+			N = strlen(argv[1]) + nbChiffre + 2; //On gère d'abord sa taille avec exactitude
 			char nomNouvFichier[N];
-			strncpy(nomNouvFichier, argv[1], strlen(argv[1]) - 4);
-			n = sprintf(nomNouvFichier + strlen(nomNouvFichier),"_%d.txt", index);
+			v = strlen(argv[1]) - 4;// pour ne pas copier le ".txt"
+			strncpy(nomNouvFichier, argv[1], v);
+			n = sprintf(nomNouvFichier + v,"_%d.txt", index);
 
 			fdFils = open(nomNouvFichier, O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 			if(fdFils == -1)
@@ -74,7 +77,7 @@ int main(int argc, char *argv[])
 				exit(errno);
 			}
 			printf("#%d => %s\n",index, nomNouvFichier);
-			printf("Taille => %.4ld\n",info_file.st_size);
+			printf("Taille => %.4ld octets\n",info_file.st_size);
 			printf("-----------------------------\n");
 			index++;
 			close(fdFils);

@@ -93,14 +93,14 @@ int main(int argc, char *argv[])
 
 void join(int argcbis, char *argvbis[])
 {
-	int fd = open("joinFile.txt", O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
+	int fd = open(argvbis[1], O_WRONLY|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 	if(fd == -1 )
 	{
 		perror("erreur d'ouverture du fichier");
 		exit(errno);
 	}
 	int fdFils;
-	for(int i = 1; i < argcbis; i++)
+	for(int i = 2; i < argcbis; i++)
 	{
 		fdFils = open(argvbis[i], O_RDONLY);
 		if(fdFils == -1)

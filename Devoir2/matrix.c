@@ -215,7 +215,6 @@ void affichage_matrice_texte(int fd, unsigned int d)
                 {
                     printf("%-10s   ",buff);
                     memset(buff, 0, 20);//vide la chaine pour stocker le nombre suivant
-                    char *buff = malloc(20 * sizeof(char));
                     break;
                 }
             }

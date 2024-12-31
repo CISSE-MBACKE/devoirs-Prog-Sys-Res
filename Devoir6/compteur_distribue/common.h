@@ -11,6 +11,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-
+//declaration du compteur distribué
+int compteur;
 
 #endif

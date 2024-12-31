@@ -45,9 +45,6 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 	
-	//déclaration du compteur
-	int compteur ;
-	
 	while(1)
 	{
 		//reception de la valeur du compteur

@@ -68,8 +68,8 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 	
-	//déclaration et initialisation du compteur à 0
-	int compteur = 0;
+	//initialisation du compteur à 0
+	compteur = 0;
 	printf("[#Serveur #]: compteur = %d\n\n", compteur);
 	
 	//envoi de la valeur du compteur
